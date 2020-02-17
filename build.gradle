@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    mavenCentral()
+}
+
+dependencies {
+    implementation name: 'Astronomy_'
+    implementation name: 'ij'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.7.9.5'
+}
+
+jar {
+    manifest {
+        attributes "Class-Path": "../../libs/ij.jar Astronomy_.jar"
+        attributes "Main-Class" : "ij.ImageJ"
+    }
+    archiveFileName = 'baavss_.jar'
+}
+
+task copyDependences (type: Copy) {
+    from configurations.runtimeClasspath
+    into "$buildDir/libs"
+}
+
+task copyToLocal (dependsOn: copyDependences, type: Copy){
+    from ("$buildDir/libs") {
+        include 'baavss_.jar'
+        include 'jackson*.jar'
+    }
+    into '/Applications/AstroImageJ/plugins'
+}
