@@ -57,7 +57,8 @@ public class Latitude {
             }
             return new Latitude(angle);
         } else {
-            throw new BAAVSSPlugInException("Cannot parse " + latitude + " as latitude");
+            throw new BAAVSSPlugInException("Cannot parse as latitude",
+                    "Latitude " + latitude + "is in an invalid format");
         }
     }
 }

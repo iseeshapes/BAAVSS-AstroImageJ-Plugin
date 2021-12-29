@@ -71,7 +71,7 @@ public class BAAVSSObservationFileWriter {
         writer.printf("%n");
 
         for (int row=0;row<measurementTable.getCounter();row++) {
-            writer.printf("%.4f\t", measurementTable.getValue("JD_UTC", row));
+            writer.printf("%.6f\t", measurementTable.getValue("JD_UTC", row));
             writer.printf("%s\t", observation.getFilter().name());
 
             double exposure;

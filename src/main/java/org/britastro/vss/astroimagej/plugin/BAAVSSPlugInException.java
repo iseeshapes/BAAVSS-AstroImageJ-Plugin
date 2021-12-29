@@ -1,11 +1,21 @@
 package org.britastro.vss.astroimagej.plugin;
 
 public class BAAVSSPlugInException extends Exception {
-    public BAAVSSPlugInException(String message) {
+    private final String title;
+
+    public BAAVSSPlugInException(String title, String message) {
         super(message);
+
+        this.title = title;
     }
 
-    public BAAVSSPlugInException(String message, Throwable cause) {
+    public BAAVSSPlugInException(String title, String message, Throwable cause) {
         super(message, cause);
+
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

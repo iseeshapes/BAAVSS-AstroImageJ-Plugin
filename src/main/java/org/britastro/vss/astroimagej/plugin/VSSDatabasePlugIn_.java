@@ -8,8 +8,8 @@ import org.britastro.vss.astroimagej.gui.ObservationForm;
 import javax.swing.*;
 
 public class VSSDatabasePlugIn_ implements PlugIn {
-    private ObservationController observationController = null;
-    private ObservationForm form = null;
+    private static ObservationController observationController = null;
+    private static ObservationForm form = null;
 
     @Override
     public void run(String s) {
@@ -19,7 +19,10 @@ public class VSSDatabasePlugIn_ implements PlugIn {
                 observationController = new ObservationController();
                 form = new ObservationForm(observationController);
             } catch (BAAVSSPlugInException e) {
-                JOptionPane.showMessageDialog(IJ.getInstance(), e.getMessage(),
+                JOptionPane.showMessageDialog(IJ.getInstance(), e.getTitle() +
+                                "\n\nThis plugin is designed to be used as the last stage in the data reduction process.  It " +
+                                "\nrelies on the data in Measurement Table to produce BAA VSS photometric formatted data.\n\n" +
+                                e.getMessage(),
                         "BAA VSS CCD Observation File Generator: Error", JOptionPane.ERROR_MESSAGE);
             }
         }

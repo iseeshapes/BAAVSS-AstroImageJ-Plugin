@@ -102,14 +102,21 @@ public class ObservationController {
         String[] tableNames = MeasurementTable.getMeasurementTableNames();
 
         if (tableNames == null || tableNames.length == 0) {
-            throw new BAAVSSPlugInException("No measurement tables found");
+            throw new BAAVSSPlugInException("No measurement table found.",
+                    "If you have closed the table please reopen using the open table button on the main menu.");
         }
 
         if (tableNames.length > 1) {
-            throw new BAAVSSPlugInException("Only one table can be open, please close all other tables");
+            throw new BAAVSSPlugInException("Only one Measurement Table used at any one time.",
+                    "Please close all tables other than Measurement Table with the the data to be exported.");
         }
 
-        return MeasurementTable.getTable(tableNames[0]);
+        MeasurementTable table = MeasurementTable.getTable(tableNames[0]);
+        if (table.getCounter() == 0) {
+            throw new BAAVSSPlugInException("There is no data in the Measurement Table.",
+                    "Please process some images or open a valid table.");
+        }
+        return table;
     }
 
     private void populateStarNames () throws BAAVSSPlugInException {
@@ -128,12 +135,14 @@ public class ObservationController {
         }
 
         if (targetStarNames.isEmpty()) {
-            throw new BAAVSSPlugInException("No target stars with magnitudes found");
+            throw new BAAVSSPlugInException("No target stars with magnitudes found.",
+                    "Ensure that at least one star is selected as a target star.");
         }
         targetStarName = targetStarNames.get(0);
 
         if (referenceStars.isEmpty()) {
-            throw new BAAVSSPlugInException("No comparsion stars with magnitudes found");
+            throw new BAAVSSPlugInException("No comparision stars with magnitudes found.",
+                    "At least one comparison star star with known magnitude must be found in the Measurement Table.");
         }
     }
 
@@ -174,7 +183,7 @@ public class ObservationController {
             writePreviousData();
             complete();
         } catch (IOException e) {
-            throw new BAAVSSPlugInException("Unable to save observation to file", e);
+            throw new BAAVSSPlugInException("Unable to save observation to file", e.getMessage(), e);
         }
     }
 

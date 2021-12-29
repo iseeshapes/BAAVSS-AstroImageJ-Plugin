@@ -57,7 +57,8 @@ public class Longitude {
             }
             return new Longitude(angle);
         } else {
-            throw new BAAVSSPlugInException("Cannot parse " + longitude + " as longitude");
+            throw new BAAVSSPlugInException("Cannot parse longitude",
+                    "Longitude " + longitude + " is in an invalid format");
         }
     }
 }

@@ -94,7 +94,7 @@ public class ObservationForm implements ObservationControllerListener {
         frame.setVisible(true);
     }
 
-    private void addComponent (String labelText, JComponent component, int index, boolean stretch) {
+    private void addComponent (String labelText, JComponent component, int index) {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.NONE;
@@ -105,18 +105,16 @@ public class ObservationForm implements ObservationControllerListener {
         c.gridx = 0;
         frame.add(new JLabel(labelText), c);
 
-        if (stretch) {
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1.0;
-        }
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
         c.gridx = 1;
 
         frame.add(component, c);
     }
 
-    private JTextField addTextField (String labelText, String value, int index, boolean stretch) {
+    private JTextField addTextField (String labelText, String value, int index) {
         JTextField textField = new JTextField(value);
-        addComponent(labelText, textField, index, stretch);
+        addComponent(labelText, textField, index);
         return textField;
     }
 
@@ -137,31 +135,29 @@ public class ObservationForm implements ObservationControllerListener {
 
         int index = 0;
 
-        observerCode = addTextField("Observer Code", header.getObserverCode(), index++, false);
+        observerCode = addTextField("Observer Code", header.getObserverCode(), index++);
         validators.add(new RegexTextFieldValidator(observationController, observerCode, Pattern.compile("[A-Za-z0-9]{0,5}")));
-        observerCode.setColumns(5);
 
-        latitude = addTextField("Latitude (DD MM SS[NS])", header.getLatitude().toString(), index++, true);
+        latitude = addTextField("Latitude (DD MM SS[NS])", header.getLatitude().toString(), index++);
         validators.add(new RegexTextFieldValidator(observationController, latitude, Latitude.latitudePattern));
 
-        longitude = addTextField("Longitude (DDD MM SS[EW])", header.getLongitude().toString(), index++, true);
+        longitude = addTextField("Longitude (DDD MM SS[EW])", header.getLongitude().toString(), index++);
         validators.add(new RegexTextFieldValidator(observationController, longitude, Longitude.longitudePattern));
 
-        altitude = addTextField("Altitude (m)", String.format("%.0f", header.getAltitude()), index++, true);
+        altitude = addTextField("Altitude (m)", String.format("%.0f", header.getAltitude()), index++);
         validators.add(new DoubleTextFieldValidator(observationController, altitude, -200.0));
 
-        telescope = addTextField("Telescope", header.getTelescope(), index++, true);
+        telescope = addTextField("Telescope", header.getTelescope(), index++);
         validators.add(new RegexTextFieldValidator(observationController, telescope, Pattern.compile(".{0,255}")));
 
-        camera = addTextField("Camera", header.getCamera(), index++, true);
+        camera = addTextField("Camera", header.getCamera(), index++);
         validators.add(new RegexTextFieldValidator(observationController, camera, Pattern.compile(".{0,255}")));
 
-        pixelSize = addTextField("Pixel Size (arcsec)", String.format("%f", header.getPixelSize()), index++,
-                true);
+        pixelSize = addTextField("Arcsec per Pixel", String.format("%f", header.getPixelSize()), index++);
         validators.add(new DoubleTextFieldValidator(observationController, pixelSize, 0.0));
 
         timingUncertainty = addTextField("Timing uncertainty (s)",
-                String.format("%.4f", header.getTimingUncertainty()), index++, true);
+                String.format("%.4f", header.getTimingUncertainty()), index++);
         validators.add(new DoubleTextFieldValidator(observationController, timingUncertainty, -0.0001));
 
         GridBagConstraints c = new GridBagConstraints();
@@ -174,10 +170,10 @@ public class ObservationForm implements ObservationControllerListener {
         separator.setOrientation(SwingConstants.HORIZONTAL);
         frame.add(separator, c);
 
-        variableStarName = addTextField("Variable Star", observation.getVariableStarName(), index++, true);
+        variableStarName = addTextField("Variable Star", observation.getVariableStarName(), index++);
         validators.add(new RegexTextFieldValidator(observationController, variableStarName, Pattern.compile(".{0,255}")));
 
-        chartName = addTextField("Chart Id", observation.getChartName(), index++, true);
+        chartName = addTextField("Chart Id", observation.getChartName(), index++);
         validators.add(new RegexTextFieldValidator(observationController, chartName, Pattern.compile(".{0,50}")));
 
         filter = new JComboBox<>(Filter.values());
@@ -188,12 +184,12 @@ public class ObservationForm implements ObservationControllerListener {
                 observationController.validate();
             }
         });
-        addComponent("Filter", filter, index++, true);
+        addComponent("Filter", filter, index++);
 
-        exposure = addTextField("Exposure (s)", String.format("%f", observation.getExposure()), index++, true);
+        exposure = addTextField("Exposure (s)", String.format("%f", observation.getExposure()), index++);
         validators.add(new DoubleTextFieldValidator(observationController, exposure, 0.0));
 
-        comment = addTextField("Comment", observation.getComment(), index++, true);
+        comment = addTextField("Comment", observation.getComment(), index++);
         validators.add(new RegexTextFieldValidator(observationController, comment, Pattern.compile(".{0,255}")));
 
         return index;
@@ -236,7 +232,7 @@ public class ObservationForm implements ObservationControllerListener {
 
         JCheckBox checkBox = new JCheckBox();
         JTextField textField = new JTextField();
-        textField.setPreferredSize(new Dimension(50, 18));
+        textField.setPreferredSize(new Dimension(80, 18));
         validators.add(new ReferenceStarValidator(observationController, checkBox, textField, referenceStar));
 
         c.weightx = 0.0;
@@ -292,11 +288,10 @@ public class ObservationForm implements ObservationControllerListener {
 
         panel.setLayout(new GridBagLayout());
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.WEST;
-
         addStretchPanel(panel, 0, 3);
 
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
         c.gridy = 1;
         saveButton = new JButton("Save");
         saveButton.addActionListener(new ActionListener() {
@@ -307,8 +302,14 @@ public class ObservationForm implements ObservationControllerListener {
         });
         panel.add(saveButton, c);
 
-        c.gridx = 2;
+        c.anchor = GridBagConstraints.CENTER;
+        c.weightx = 1.0;
+        c.gridx = 1;
+        panel.add(new JLabel("AIJ V" + IJ.getAstroVersion()), c);
+
         c.anchor = GridBagConstraints.EAST;
+        c.weightx = 0.0;
+        c.gridx = 2;
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             @Override
@@ -317,10 +318,6 @@ public class ObservationForm implements ObservationControllerListener {
             }
         });
         panel.add(cancelButton, c);
-
-        c.weightx = 1.0;
-        c.gridx = 1;
-        panel.add(new JLabel());
 
         return panel;
     }
@@ -333,10 +330,8 @@ public class ObservationForm implements ObservationControllerListener {
             if (!validator.isValid()) {
                 valid = false;
             }
-            if (validator instanceof ReferenceStarValidator) {
-                if (((ReferenceStarValidator)validator).isUsed()) {
-                    referenceStarsUsed++;
-                }
+            if (validator instanceof ReferenceStarValidator && ((ReferenceStarValidator)validator).isUsed()) {
+                referenceStarsUsed++;
             }
         }
         if (referenceStarsUsed == 0) {
@@ -391,14 +386,13 @@ public class ObservationForm implements ObservationControllerListener {
             for (Validator validator : validators) {
                 if (validator instanceof ReferenceStarValidator) {
                     updateReferenceStar(referenceStars, (ReferenceStarValidator)validator);
-
                 }
             }
             SaveDialog saveDialog = new SaveDialog("Save VSS Database File", observation.getVariableStarName(), ".txt");
             File file = new File(saveDialog.getDirectory(), saveDialog.getFileName());
             observationController.writeFile(header, observation, targetStarName, referenceStars, file);
         } catch (BAAVSSPlugInException e) {
-            JOptionPane.showMessageDialog(IJ.getInstance(), e.getMessage(),
+            JOptionPane.showMessageDialog(IJ.getInstance(), e.getTitle() + "\n\n" + e.getMessage(),
                     "BAA VSS CCD Observation File Generator: Error", JOptionPane.ERROR_MESSAGE);
         }
     }

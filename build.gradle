@@ -2,6 +2,11 @@ plugins {
     id 'java'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
 repositories {
     flatDir {
         dirs 'libs'
@@ -16,10 +21,6 @@ dependencies {
 }
 
 jar {
-    manifest {
-        attributes "Class-Path": "../../libs/ij.jar Astronomy_.jar"
-        attributes "Main-Class" : "ij.ImageJ"
-    }
     archiveFileName = 'baavss_.jar'
 }
 
